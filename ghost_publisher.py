@@ -21,21 +21,29 @@ payload = {
 token = jwt.encode(payload, bytes.fromhex(secret), algorithm='HS256', headers=header)
 
 # Make an authenticated request to create a post
-url = 'https://staggering.ghost.io/ghost/api/admin/posts/'
+url = 'https://staggering.ghost.io/ghost/api/admin/posts/?source=html'
 headers = {'Authorization': 'Ghost {}'.format(token)}
 
 
-def publish_article(address, title, description, content):
-    post = {
+def publish_article(address, title, description, content,image_url):
+    post_data = {
         "title": title,
-        "html": content,
+        "html": f'{content}',
         "meta_title": title,
         "meta_description": description,
         "status": "published",
-        "published_at": date.now().isoformat(),
-        "tags": [],
-        "authors": []
+        "feature_image": image_url,
+        "feature_image_alt": description[:125],
+        "published_at": date.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        #"tags": [],
+        #"authors": []
     }
+    logging.info(f"Request body: {post_data}")  # Add this line to log the request body
+
+    post = {
+        "posts": [post_data]
+    }
+
     try:
         response = requests.post(
             url,
@@ -44,8 +52,8 @@ def publish_article(address, title, description, content):
         )
         response.raise_for_status()
 
-
         print("Post published successfully")
     except requests.exceptions.RequestException as e:
         print(f"Error publishing post: {e}")
+        print(response.json())  # Add this line to print the response JSON
 

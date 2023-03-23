@@ -23,10 +23,11 @@ async def persist_todb():
 
                 # Publish data to Ghost
                 publish_article(
-                    address="https://your-ghost-blog-url.com/ghost/api/v3/content/posts/",
+                    address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
                     title=article_data["title"],
                     description=article_data["description"],
-                    content=article_data["content"]
+                    content=article_data["content"],
+                    image_url=image_url
                 )
 
                 # Save data to MongoDB

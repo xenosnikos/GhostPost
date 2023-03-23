@@ -12,7 +12,7 @@ def generate_article(url, title, description):
 
         prompt_template = """Don't return empty results. You must write an interesting long article based on the 
         following text and try to avoid using and copying same words from the text. Divide result article into 
-        several paragraphs. 
+        several paragraphs using html <p> tags. 
 
             {text}
             """
