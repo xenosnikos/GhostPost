@@ -21,23 +21,29 @@ async def persist_todb():
                 article_data = generate_article(article["url"], article["title"], article["description"])
                 image_url = article["urlToImage"]
 
-                # Publish data to Ghost
-                publish_article(
-                    address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
-                    title=article_data["title"],
-                    description=article_data["description"],
-                    content=article_data["content"],
-                    image_url=image_url
-                )
+                if article_data["title"] != '':
+                    
+                    # Publish data to Ghost
+                    publish_article(
+                        address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
+                        title=article_data["title"],
+                        description=article_data["description"],
+                        content=article_data["content"],
+                        image_url=image_url
+                    )
 
-                # Save data to MongoDB
-                mongo_collection.insert_one({
-                    "title": article_data["title"],
-                    "description": article_data["description"],
-                    "content": article_data["content"],
-                    "image_url": image_url,
-                    "created_at": date.now()
-                })
-                logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
-                print(f"{100 / len(data['articles']) * (idx + 1)}%")
+                    # Save data to MongoDB
+                    mongo_collection.insert_one({
+                        "title": article_data["title"],
+                        "description": article_data["description"],
+                        "content": article_data["content"],
+                        "image_url": image_url,
+                        "created_at": date.now()
+                    })
+    
+                    logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
+                    print(f"{100 / len(data['articles']) * (idx + 1)}%")
+                
+                else:
+                    print("not published")
 
