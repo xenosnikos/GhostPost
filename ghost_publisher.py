@@ -17,13 +17,7 @@ payload = {
     'aud': '/admin/'
 }
 
-html_content1 = """<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <title>Documnet</title>
-  </head>
-  <body>
-  <section style="padding-top: 48px; padding-bottom: 48px">
+html_content1 = """ <section style="padding-top: 48px; padding-bottom: 48px">
       <div
         style="
           max-width: 900px;
@@ -217,7 +211,7 @@ def publish_article(address, title, description, content,image_url):
     
     post_data = {
         "title": title,
-        "html": {html_content1},
+        "html": f'{html_content+content+html_content1}',
         "meta_title": title,
         "meta_description": description,
         "status": "published",
