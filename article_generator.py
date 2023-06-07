@@ -20,6 +20,9 @@ def generate_article(url, title, description):
         llm_chain = LLMChain(prompt=prompt, llm=llm)
         content = llm_chain.run(data[0].page_content)
 
+        print("cntnt===>"+content+"----cntnt end")
+
+
         prompt_template = """Below is given article title.
 
         {title}
@@ -40,6 +43,10 @@ def generate_article(url, title, description):
             prompt = PromptTemplate(template=prompt_template, input_variables=["description"])
             llm_chain = LLMChain(prompt=prompt, llm=llm)
             description = llm_chain.run(description)
+
+            print("desc===>"+description+"----=desc end")
+
+
 
         return {"title": title, "description": description, "content": content}
     except Exception as e:

@@ -14,7 +14,7 @@ mongo_collection = mongo_db["articles"]
 async def persist_todb():
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            f"https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
+            f"http://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
         ) as resp:
             data = await resp.json()
             for idx, article in enumerate(data["articles"]):
@@ -31,15 +31,16 @@ async def persist_todb():
                         content=article_data["content"],
                         image_url=image_url
                     )
+                    print("db content==>",article_data["content"]+"------------db end")
 
                     # Save data to MongoDB
-                    mongo_collection.insert_one({
-                        "title": article_data["title"],
-                        "description": article_data["description"],
-                        "content": article_data["content"],
-                        "image_url": image_url,
-                        "created_at": date.now()
-                    })
+                    # mongo_collection.insert({
+                    #     "title": article_data["title"],
+                    #     "description": article_data["description"],
+                    #     "content": article_data["content"],
+                    #     "image_url": image_url,
+                    #     "created_at": date.now()
+                    # })
     
                     logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
                     print(f"{100 / len(data['articles']) * (idx + 1)}%")
