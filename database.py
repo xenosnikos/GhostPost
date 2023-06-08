@@ -14,24 +14,30 @@ mongo_collection = mongo_db["articles"]
 async def persist_todb():
     async with aiohttp.ClientSession() as session:
         async with session.get(
-            f"https://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
+            f"http://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
         ) as resp:
             data = await resp.json()
             for idx, article in enumerate(data["articles"]):
+               
                 article_data = generate_article(article["url"], article["title"], article["description"])
                 image_url = article["urlToImage"]
+                print(article_data["content"])
 
-                # Publish data to Ghost
-                publish_article(
-                    address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
-                    title=article_data["title"],
-                    description=article_data["description"],
-                    content=article_data["content"],
-                    image_url=image_url
-                )
+                tags = "<p>"
+                if len(article_data["content"]) > 0:
+                   if tags in article_data["content"]:
+                    print("tags exist")
+                #    publish_article(
+                #     address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
+                #     title=article_data["title"],
+                #     description=article_data["description"],
+                #     content=article_data["content"],
+                #     image_url=image_url
+                #                    )
+                
 
-                # Save data to MongoDB
-                mongo_collection.insert_one({
+
+                mongo_collecticon.insert_one({
                     "title": article_data["title"],
                     "description": article_data["description"],
                     "content": article_data["content"],
