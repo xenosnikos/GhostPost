@@ -4,6 +4,8 @@ import logging
 
 
 def generate_article(url, title, description):
+
+    print(title)
     loader = UnstructuredURLLoader(urls=[url])
     llm = OpenAI(temperature=0, max_tokens=1000)
 

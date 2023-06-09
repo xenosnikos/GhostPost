@@ -18,32 +18,36 @@ async def persist_todb():
         ) as resp:
             data = await resp.json()
             for idx, article in enumerate(data["articles"]):
-               
-                article_data = generate_article(article["url"], article["title"], article["description"])
-                image_url = article["urlToImage"]
-                print(article_data["content"])
+               results = mongo_collection.count_documents({"title":article["title"]})
+               print("results"+str(results))
+               if  results == 0:
 
-                tags = "<p>"
-                if len(article_data["content"]) > 0:
-                   if tags in article_data["content"]:
-                    print("tags exist")
-                #    publish_article(
-                #     address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
-                #     title=article_data["title"],
-                #     description=article_data["description"],
-                #     content=article_data["content"],
-                #     image_url=image_url
-                #                    )
-                
+                    article_data = generate_article(article["url"], article["title"], article["description"])
+                    image_url = article["urlToImage"]
+                    print(article_data["content"])
+
+                    tags = "<p>"
+                    if len(article_data["content"]) > 0:
+                        if tags in article_data["content"]:
+                        
+                            print("tags exist")
+                            publish_article(
+                                address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
+                                title=article_data["title"],
+                                description=article_data["description"],
+                                content=article_data["content"],
+                                image_url=image_url
+                                            )
+                    
 
 
-                mongo_collecticon.insert_one({
-                    "title": article_data["title"],
-                    "description": article_data["description"],
-                    "content": article_data["content"],
-                    "image_url": image_url,
-                    "created_at": date.now()
-                })
-                logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
-                print(f"{100 / len(data['articles']) * (idx + 1)}%")
+    mongo_collection.insert_one({
+        "title": article_data["title"],
+        "description": article_data["description"],
+        "content": article_data["content"],
+        "image_url": image_url,
+        "created_at": date.now()
+    })
+    logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
+    print(f"{100 / len(data['articles']) * (idx + 1)}%")
 

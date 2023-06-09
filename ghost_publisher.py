@@ -23,20 +23,17 @@ payload = {
     
    
 # Create the token (including decoding secret)
-token = jwt.encode(payload, bytes.fromhex(secret), algorithm='HS256', headers=header)
-print(token);
 
-# Make an authenticated request to create a post
-url = 'https://staggering.ghost.io/ghost/api/admin/posts?formats=mobiledoc%2Clexical'
-headers = {'Authorization': 'Ghost {}'.format(token)}
 
-print(headers)
 
 
 def publish_article(address, title, description, content,image_url):
-    print("content....===>"+content+"--------enddddd")
     
+    token = jwt.encode(payload, bytes.fromhex(secret), algorithm='HS256', headers=header)
 
+    # Make an authenticated request to create a post
+    url = 'https://staggering.ghost.io/ghost/api/admin/posts?formats=mobiledoc%2Clexical'
+    headers = {'Authorization': 'Ghost {}'.format(token)}
 
     html = x = content.replace("\n", "\\n")
 
@@ -50,14 +47,13 @@ def publish_article(address, title, description, content,image_url):
         "meta_description": description,
         "status": "published",
         "feature_image": image_url,
-        "feature_image_alt": description[:125],
+        # "feature_image_alt": description[:125],
         "published_at": date.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
         #"tags": [],
         #"authors": []
     }
 
 
-    print(post_data)
 
     
     
