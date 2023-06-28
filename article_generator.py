@@ -20,7 +20,7 @@ def generate_article(url, title, description):
         llm_chain = LLMChain(prompt=prompt, llm=llm)
         content = llm_chain.run(data[0].page_content)
 
-        print("cntnt===>"+content+"----cntnt end")
+        # print("cntnt===>"+content+"----cntnt end")
 
 
         prompt_template = """Below is given article title.
@@ -44,7 +44,7 @@ def generate_article(url, title, description):
             llm_chain = LLMChain(prompt=prompt, llm=llm)
             description = llm_chain.run(description)
 
-            print("desc===>"+description+"----=desc end")
+            # print("desc===>"+description+"----=desc end")
 
 
 

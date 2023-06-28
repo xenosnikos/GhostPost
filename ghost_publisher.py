@@ -207,11 +207,11 @@ headers = {'Authorization': 'Ghost {}'.format(token)}
 
 
 def publish_article(address, title, description, content,image_url):
-    print("content....===>"+f'{content}'+"--------enddddd")
+    # print("content....===>"+f'{content}'+"--------enddddd")
     
     post_data = {
         "title": title,
-        "html": f'{html_content+content+html_content1}',
+        "html": f'{content}',
         "meta_title": title,
         "meta_description": description,
         "status": "published",

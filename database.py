@@ -17,34 +17,39 @@ async def persist_todb():
             f"http://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
         ) as resp:
             data = await resp.json()
-            for idx, article in enumerate(data["articles"]):
-                article_data = generate_article(article["url"], article["title"], article["description"])
-                image_url = article["urlToImage"]
 
-                if article_data["title"] != '':
+            
+            for idx, article in enumerate(data["articles"]):
+               results = mongo_collection.count_documents({"title":article["title"]})
+               print("results"+str(results))
+               if  results == 0:
+                     article_data = generate_article(article["url"], article["title"], article["description"])
+                     image_url = article["urlToImage"]
+
+                     if article_data["title"] != '':
                     
                     # Publish data to Ghost
-                    publish_article(
+                      publish_article(
                         address="https://staggering.ghost.io/ghost/api/admin/posts/?source=html",
                         title=article_data["title"],
                         description=article_data["description"],
                         content=article_data["content"],
                         image_url=image_url
                     )
-                    print("db content==>",article_data["content"]+"------------db end")
+                     print("db content==>",article_data["content"]+"------------db end")
 
                     # Save data to MongoDB
-                    # mongo_collection.insert({
-                    #     "title": article_data["title"],
-                    #     "description": article_data["description"],
-                    #     "content": article_data["content"],
-                    #     "image_url": image_url,
-                    #     "created_at": date.now()
-                    # })
+                     mongo_collection.insert_one({
+                        "title": article_data["title"],
+                        "description": article_data["description"],
+                        "content": article_data["content"],
+                        "image_url": image_url,
+                        "created_at": date.now()
+                    })
     
-                    logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
-                    print(f"{100 / len(data['articles']) * (idx + 1)}%")
+                     logging.info(f"Saved article with title: {article_data['title']} to MongoDB")
+                     print(f"{100 / len(data['articles']) * (idx + 1)}%")
                 
-                else:
+               else:
                     print("not published")
 
