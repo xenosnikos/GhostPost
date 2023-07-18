@@ -1,10 +1,10 @@
-from langchain.document_loaders import UnstructuredURLLoader
+from langchain.document_loaders import WebBaseLoader
 from langchain import OpenAI, LLMChain, PromptTemplate
 import logging
 
 
 def generate_article(url, title, description):
-    loader = UnstructuredURLLoader(urls=[url])
+    loader = WebBaseLoader(url)
     llm = OpenAI(temperature=0, max_tokens=1000)
 
     try:
@@ -20,7 +20,7 @@ def generate_article(url, title, description):
         llm_chain = LLMChain(prompt=prompt, llm=llm)
         content = llm_chain.run(data[0].page_content)
 
-        # print("cntnt===>"+content+"----cntnt end")
+        print("cntnt===>"+content+"----cntnt end")
 
 
         prompt_template = """Below is given article title.

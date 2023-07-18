@@ -17,12 +17,14 @@ async def persist_todb():
             f"http://newsapi.org/v2/top-headlines?country=us&category=sports&apiKey={NEWS_API_KEY}"
         ) as resp:
             data = await resp.json()
+            print(len(data["articles"]))
+
 
             
             for idx, article in enumerate(data["articles"]):
                results = mongo_collection.count_documents({"url":article["url"]})
-               print("results"+str(results)+article["url"])
-               if  results == 0:
+               print("results"+str(results)+article["url"]+article["source"]["name"])
+               if  results == 0 and article["source"]["name"] != "YouTube":
                      article_data = generate_article(article["url"], article["title"], article["description"])
                      image_url = article["urlToImage"]
 
